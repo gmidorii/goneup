@@ -2,7 +2,6 @@ package main
 
 import (
 	"html/template"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -18,7 +17,6 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-	log.Println(pwd)
 	tpl, err := template.ParseFiles(filepath.Join(pwd, "static", "template", "index.html"))
 	if err != nil {
 		return
