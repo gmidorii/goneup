@@ -7,11 +7,6 @@ import (
 	"path/filepath"
 )
 
-// Index is index.html templete struct
-type Index struct {
-	Domain string
-}
-
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	pwd, err := os.Getwd()
 	if err != nil {
@@ -21,5 +16,5 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-	tpl.Execute(w, Index{Domain: "localhost:8080"})
+	tpl.Execute(w, nil)
 }
