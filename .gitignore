@@ -16,3 +16,6 @@
 vendor
 gin-bin
 goneup
+
+# k8s manifest file
+manifest
