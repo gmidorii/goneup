@@ -19,3 +19,6 @@ goneup
 
 # k8s manifest file
 manifest
+
+# sqlite3
+db/goneup.sqlite
