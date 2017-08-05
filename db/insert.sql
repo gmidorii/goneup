@@ -1,1 +1,1 @@
-INSERT INTO t_oneup VALUES (1, 'test', 'one up', '2017/08/03', '');
+INSERT INTO t_oneup(title, value, created_date, updated_date) VALUES ('test', 'one up', '2017/08/03', '');

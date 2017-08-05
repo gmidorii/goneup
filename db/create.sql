@@ -1,5 +1,5 @@
 CREATE TABLE t_oneup (
-	id INTEGER PRIMARY KEY,
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	title TEXT,
 	value TEXT,
 	created_date TEXT,

@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"net/http"
 )
@@ -21,26 +20,30 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	sqlStmt := "SELECT id, title FROM t_oneup"
-	rows, err := db.Query(sqlStmt)
+	tx, err := db.Begin()
 	if err != nil {
 		log.Fatal(err)
 		w.Write([]byte("NO"))
 		return
 	}
-	defer rows.Close()
-
-	oneups := []Oneup{}
-	for rows.Next() {
-		oneup := Oneup{}
-		err = rows.Scan(&oneup.ID, &oneup.Title)
-		if err != nil {
-			log.Fatal(err)
-		}
-		oneups = append(oneups, oneup)
+	stmt, err := tx.Prepare("INSERT INTO t_oneup(title) VALUES(?)")
+	if err != nil {
+		log.Fatal(err)
+		w.Write([]byte("NO"))
+		return
 	}
+	defer stmt.Close()
 
-	for _, v := range oneups {
-		w.Write([]byte(fmt.Sprintf("ID:%d, Title:%s", v.ID, v.Title)))
+	_, err = stmt.Exec("title-1")
+	if err != nil {
+		log.Fatal(err)
+		w.Write([]byte("NO"))
+		return
 	}
+	if err = tx.Commit(); err != nil {
+		log.Fatal(err)
+		w.Write([]byte("NO"))
+		return
+	}
+	w.Write([]byte("YES"))
 }
