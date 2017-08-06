@@ -6,44 +6,54 @@ import (
 	"net/http"
 )
 
+// Oneup is oneup table definition
 type Oneup struct {
-	ID    int
 	Title string
 }
 
+const (
+	dbConfig = "./db/goneup.sqlite"
+)
+
 func postHandler(w http.ResponseWriter, r *http.Request) {
-	db, err := sql.Open("sqlite3", "./db/goneup.sqlite")
+	err := r.ParseForm()
 	if err != nil {
 		log.Fatal(err)
 		w.Write([]byte("NO"))
 		return
+	}
+	content := r.PostForm.Get("oneup-content")
+	log.Println(content)
+	if err = insert(content); err != nil {
+		log.Println(err)
+		w.Write([]byte("NO"))
+	}
+	w.Write([]byte("YES"))
+}
+
+func insert(content string) error {
+	db, err := sql.Open("sqlite3", dbConfig)
+	if err != nil {
+		return err
 	}
 	defer db.Close()
 
 	tx, err := db.Begin()
 	if err != nil {
-		log.Fatal(err)
-		w.Write([]byte("NO"))
-		return
+		return err
 	}
 	stmt, err := tx.Prepare("INSERT INTO t_oneup(title) VALUES(?)")
 	if err != nil {
-		log.Fatal(err)
-		w.Write([]byte("NO"))
-		return
+		return err
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec("title-1")
+	_, err = stmt.Exec(content)
 	if err != nil {
-		log.Fatal(err)
-		w.Write([]byte("NO"))
-		return
+		return err
 	}
 	if err = tx.Commit(); err != nil {
-		log.Fatal(err)
-		w.Write([]byte("NO"))
-		return
+		return err
 	}
-	w.Write([]byte("YES"))
+	return nil
 }
