@@ -19,16 +19,16 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		log.Fatal(err)
-		w.Write([]byte("NO"))
+		http.Redirect(w, r, "/index", http.StatusInternalServerError)
 		return
 	}
 	content := r.PostForm.Get("oneup-content")
 	log.Println(content)
 	if err = insert(content); err != nil {
 		log.Println(err)
-		w.Write([]byte("NO"))
+		http.Redirect(w, r, "/index", http.StatusInternalServerError)
 	}
-	w.Write([]byte("YES"))
+	http.Redirect(w, r, "/index", http.StatusOK)
 }
 
 func insert(content string) error {
