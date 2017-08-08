@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"html/template"
 	"log"
 	"net/http"
 )
@@ -15,20 +16,33 @@ const (
 	dbConfig = "./db/goneup.sqlite"
 )
 
+type postResult struct {
+	Result string
+}
+
 func postHandler(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
+	tmpl, err := template.ParseFiles("./static/template/post.html")
 	if err != nil {
-		log.Fatal(err)
-		http.Redirect(w, r, "/index", http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Internal Server Error"))
+		return
+	}
+
+	err = r.ParseForm()
+	if err != nil {
+		log.Println(err)
+		tmpl.Execute(w, postResult{Result: "Failed"})
 		return
 	}
 	content := r.PostForm.Get("oneup-content")
 	log.Println(content)
 	if err = insert(content); err != nil {
 		log.Println(err)
-		http.Redirect(w, r, "/index", http.StatusInternalServerError)
+		tmpl.Execute(w, postResult{Result: "Failed"})
+		return
 	}
-	http.Redirect(w, r, "/index", http.StatusOK)
+	tmpl.Execute(w, postResult{Result: "Success!!"})
 }
 
 func insert(content string) error {
