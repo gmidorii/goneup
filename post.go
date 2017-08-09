@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -13,6 +14,10 @@ type Oneup struct {
 	Title       string
 	CreatedDate string
 	UpdatedDate string
+}
+
+func (o Oneup) String() string {
+	return fmt.Sprintf("%v", o.Title)
 }
 
 type postResult struct {

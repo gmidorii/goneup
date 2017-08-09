@@ -10,6 +10,10 @@ import (
 	"path/filepath"
 )
 
+type indexTemplate struct {
+	Oneups []Oneup
+}
+
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	oneups, err := selectOneup(5)
 	if err != nil {
@@ -26,7 +30,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-	tpl.Execute(w, nil)
+	tpl.Execute(w, indexTemplate{Oneups: oneups})
 }
 
 func selectOneup(limit int) ([]Oneup, error) {
