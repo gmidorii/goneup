@@ -15,11 +15,6 @@ type Oneup struct {
 	UpdatedDate string
 }
 
-const (
-	dbConfig   = "./db/goneup.sqlite"
-	dateLayout = "2006-15-02 15:04:05"
-)
-
 type postResult struct {
 	Result string
 	Title  string
