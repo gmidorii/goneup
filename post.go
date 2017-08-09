@@ -10,7 +10,9 @@ import (
 
 // Oneup is oneup table definition
 type Oneup struct {
-	Title string
+	Title       string
+	CreatedDate string
+	UpdatedDate string
 }
 
 const (
@@ -42,7 +44,12 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 	title := r.PostForm.Get("oneup-content")
 	date := time.Now()
 	log.Println(title)
-	if err = insert(title, date); err != nil {
+	oneup := Oneup{
+		Title:       title,
+		CreatedDate: date.Format(dateLayout),
+		UpdatedDate: date.Format(dateLayout),
+	}
+	if err = insert(oneup); err != nil {
 		log.Println(err)
 		tmpl.Execute(w, postResult{Result: "Failed"})
 		return
@@ -50,7 +57,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, postResult{Result: "Success!!", Title: title, Date: date.Format(dateLayout)})
 }
 
-func insert(title string, date time.Time) error {
+func insert(oneup Oneup) error {
 	db, err := sql.Open("sqlite3", dbConfig)
 	if err != nil {
 		return err
@@ -67,7 +74,7 @@ func insert(title string, date time.Time) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(title, date.Format(dateLayout), date.Format(dateLayout))
+	_, err = stmt.Exec(oneup.Title, oneup.CreatedDate, oneup.UpdatedDate)
 	if err != nil {
 		return err
 	}
