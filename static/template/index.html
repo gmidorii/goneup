@@ -19,8 +19,23 @@
       Button
       </button>
     </form>
-    <div>
-      {{range .Oneups}}<div>{{ . }}</div>{{end}}
-    </div>
+	<div style="padding:20px">
+    <table class="mdl-data-table mdl-js-data-table  mdl-shadow--2dp" border="1" align="center">
+		<thead>
+			<tr>
+				<th>date</th>
+				<th>oneup</th>
+			</tr>
+		</thead>
+		{{range .Oneups}}
+			<tr>
+				<td>{{ .CreatedDate }}</td>
+				<td>{{ .Title }}</td>
+			</tr>
+		{{ end }}
+		<tbody>
+		</tbody>
+    </table>
+	</div>
   </body>
 </html>

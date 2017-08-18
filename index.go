@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -20,7 +19,6 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	fmt.Println(oneups)
 	pwd, err := os.Getwd()
 	if err != nil {
 		log.Println(err)
@@ -40,14 +38,14 @@ func selectOneup(limit int) ([]Oneup, error) {
 	}
 	defer db.Close()
 
-	rows, err := db.Query("SELECT title FROM t_oneup ORDER BY updated_date LIMIT ?", limit)
+	rows, err := db.Query("SELECT title, created_date FROM t_oneup ORDER BY updated_date LIMIT ?", limit)
 	if err != nil {
 		return nil, err
 	}
 	oneups := []Oneup{}
 	for rows.Next() {
 		oneup := Oneup{}
-		err = rows.Scan(&oneup.Title)
+		err = rows.Scan(&oneup.Title, &oneup.CreatedDate)
 		if err != nil {
 			return nil, err
 		}
